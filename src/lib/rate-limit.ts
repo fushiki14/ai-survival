@@ -6,7 +6,7 @@ export async function checkServerRateLimit(
   ip: string,
   maxPerDay: number = 2
 ): Promise<boolean> {
-  const key = `ratelimit:${ip}`;
+  const key = `survival:ratelimit:${ip}`;
   const current = await redis.incr(key);
 
   // 初回アクセス時にTTL設定
