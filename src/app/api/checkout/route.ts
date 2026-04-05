@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
 
     const stripe = getStripe();
     const allowedOrigins = [
+      "https://ai-survival-pi.vercel.app",
       "https://ai-survival.vercel.app",
       "http://localhost:3000",
     ];

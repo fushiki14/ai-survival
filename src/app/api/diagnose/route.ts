@@ -26,6 +26,7 @@ function getClientIp(req: NextRequest): string {
 }
 
 const ALLOWED_ORIGINS = [
+  "https://ai-survival-pi.vercel.app",
   "https://ai-survival.vercel.app",
   "http://localhost:3000",
 ];
