@@ -70,7 +70,8 @@ export default function Home() {
   }, []);
 
   const charCount = careerText.length;
-  const canSubmit = careerText.trim().length >= 20;
+  const uniqueChars = new Set(careerText.trim()).size;
+  const canSubmit = careerText.trim().length >= 50 && uniqueChars >= 10;
 
   function handleQuizAnswer(value: string) {
     const currentQuestion = QUIZ_STEPS[quizStep];
@@ -111,10 +112,10 @@ export default function Home() {
     setError("");
 
     const messages = [
-      "キャリア情報を解析中...",
-      "AI露出度を算出中...",
-      "モラベックの壁を検証中...",
-      "生存戦略を策定中...",
+      "解析中...",
+      "スコアを算出中...",
+      "データを照合中...",
+      "レポートを生成中...",
     ];
     let msgIndex = 0;
     setLoadingMessage(messages[0]);
@@ -310,7 +311,7 @@ export default function Home() {
                     charCount < 20 ? "text-zinc-500" : "text-zinc-400"
                   }`}
                 >
-                  {charCount}文字{charCount < 20 && "（20文字以上）"}
+                  {charCount}文字{charCount < 50 && "（50文字以上）"}
                 </span>
                 <span className="text-xs text-zinc-600">最大3000文字</span>
               </div>

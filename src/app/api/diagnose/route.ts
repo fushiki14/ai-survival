@@ -54,9 +54,17 @@ export async function POST(req: NextRequest) {
       quiz?: { aiUsage?: string; jobChange?: string; learning?: string };
     };
 
-    if (!careerText || careerText.trim().length < 20) {
+    if (!careerText || careerText.trim().length < 50) {
       return NextResponse.json(
-        { error: "職種・スキルの記述は20文字以上必要です" },
+        { error: "職種・スキルの記述は50文字以上必要です" },
+        { status: 400 }
+      );
+    }
+
+    const uniqueChars = new Set(careerText.trim()).size;
+    if (uniqueChars < 10) {
+      return NextResponse.json(
+        { error: "意味のあるキャリア情報を入力してください" },
         { status: 400 }
       );
     }
