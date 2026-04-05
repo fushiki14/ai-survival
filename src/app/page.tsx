@@ -67,6 +67,24 @@ export default function Home() {
       .then((r) => r.json())
       .then((d) => setDiagnosisCount(d.count))
       .catch(() => {});
+
+    // 決済キャンセル時の復帰処理
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("cancelled") === "true") {
+      const previewStr = localStorage.getItem("preview_data");
+      const encryptedPaid = localStorage.getItem("encrypted_paid");
+      if (previewStr && encryptedPaid) {
+        try {
+          const cached = JSON.parse(previewStr);
+          setPreviewData({ ...cached, encryptedPaid });
+          setStep("preview");
+          setError("決済がキャンセルされました。診断結果はそのまま残っています。");
+        } catch {
+          // キャッシュ破損時はランディングに留まる
+        }
+      }
+      window.history.replaceState({}, "", "/");
+    }
   }, []);
 
   const charCount = careerText.length;
@@ -336,6 +354,12 @@ export default function Home() {
         {/* Preview */}
         {step === "preview" && previewData && (
           <div className="space-y-6">
+            {error && (
+              <p className="text-sm text-amber-400 bg-amber-950/30 border border-amber-900/50 rounded-lg px-4 py-2">
+                {error}
+              </p>
+            )}
+
             {/* Survival Rate */}
             <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-6 text-center">
               <p className="text-xs text-zinc-500 mb-1">AI時代 生存率</p>
@@ -432,6 +456,19 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 pb-8 text-center text-xs text-zinc-600 space-y-1">
+        <p>本サービスはAIによる分析であり、キャリアに関する専門的助言ではありません。</p>
+        <div className="flex justify-center gap-4">
+          <a href="/privacy" className="hover:text-zinc-400 transition-colors">
+            プライバシーポリシー
+          </a>
+          <a href="/tokushoho" className="hover:text-zinc-400 transition-colors">
+            特定商取引法に基づく表記
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }

@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     description:
       "あなたのキャリア、AI時代に生き残れるか。5軸スコア分析と生存戦略を即時提供。",
   },
+  alternates: {
+    canonical: "https://ai-survival-pi.vercel.app",
+  },
 };
 
 export default function RootLayout({

@@ -59,6 +59,18 @@ function SuccessContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // キャッシュされた結果があればそれを使う
+    const cachedResult = localStorage.getItem("paid_result");
+    if (cachedResult) {
+      try {
+        setResult(JSON.parse(cachedResult));
+        setLoading(false);
+        return;
+      } catch {
+        // キャッシュ破損時はフォールスルー
+      }
+    }
+
     if (!sessionId) {
       setError("無効なセッションです");
       setLoading(false);
@@ -91,14 +103,17 @@ function SuccessContent() {
         return res.json();
       })
       .then((paidContent) => {
-        setResult({
+        const fullResult: DiagnosisFull = {
           preview: previewData.preview,
           scores: paidContent.scores || null,
           flaws: paidContent.flaws,
           strategies: paidContent.strategies || [],
           tips: paidContent.tips || [],
           actions: paidContent.actions || [],
-        });
+        };
+        setResult(fullResult);
+        // 結果をキャッシュ（リロード対策）
+        localStorage.setItem("paid_result", JSON.stringify(fullResult));
         localStorage.removeItem("encrypted_paid");
         localStorage.removeItem("preview_data");
       })
@@ -142,6 +157,13 @@ function SuccessContent() {
         <div className="text-center mb-4">
           <h1 className="text-xl font-bold">診断結果</h1>
           <p className="text-sm text-zinc-400 mt-1">九条レイの診断</p>
+        </div>
+
+        {/* Warning */}
+        <div className="bg-amber-950/30 border border-amber-700/30 rounded-lg px-4 py-2.5">
+          <p className="text-xs text-amber-400">
+            この結果はブラウザに保存されています。ブラウザのデータを削除すると再表示できません。スクリーンショットの保存を推奨します。
+          </p>
         </div>
 
         {/* Preview summary */}
